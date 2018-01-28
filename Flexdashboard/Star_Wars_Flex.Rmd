@@ -1,0 +1,104 @@
+---
+title: "Starwars Flex Dashboard"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: fill
+    theme: sandstone
+    favicon: favicon.ico
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(reshape2)
+library(dplyr)
+library(plotly)
+
+pdf(NULL)
+
+starwars <- starwars
+starwars$films <- NULL
+starwars$vehicles <- NULL
+starwars$starships <- NULL
+meltwars <- melt(starwars, id = "name")
+meltwars$name <- as.factor(meltwars$name)
+```
+
+Sidebar {.sidebar}
+=====================================
+
+```{r}
+tags$
+
+selectInput("char_select",
+               "Characters:",
+               choices = levels(meltwars$name),
+               multiple = TRUE,
+               selectize = TRUE,
+               selected = c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster"))
+```
+
+Plot
+=====================================
+
+Row 
+-------------------------------------
+
+###
+
+```{r}
+renderValueBox({
+    sw <- subset(starwars, name %in% input$char_select)
+    num <- round(mean(sw$mass, na.rm = T), 2)
+    
+    valueBox(caption = "Avg Mass", value = num, icon = "fa-balance-scale", color = "info")
+})
+```
+
+###
+
+```{r}
+renderValueBox({
+  sw <- subset(starwars, name %in% input$char_select)
+  num <- round(mean(sw$height, na.rm = T), 2)
+    
+  valueBox(caption = "Avg Height", value = num, icon = "fa-sort-numeric-asc", color = "success")
+})
+```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### Mass
+
+```{r}
+renderPlotly({
+    dat <- subset(meltwars, name %in% input$char_select & variable == "mass")
+    ggplot(data = dat, aes(x = name, y = as.numeric(value), fill = name)) + geom_bar(stat = "identity")
+  })
+```
+
+### Height
+
+```{r}
+renderPlotly({
+    dat <- subset(meltwars, name %in% input$char_select & variable == "height")
+    ggplot(data = dat, aes(x = name, y = as.numeric(value), fill = name)) + geom_bar(stat = "identity")
+  })
+```
+
+Table
+=====================================
+
+Row 
+-------------------------------------
+
+### Table 
+
+```{r}
+DT::renderDataTable({
+    subset(starwars, name %in% input$char_select, select = c(name, height, mass, birth_year, homeworld, species))
+})
+```
