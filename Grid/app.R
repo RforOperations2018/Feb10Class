@@ -1,4 +1,3 @@
-# Class 1
 # In Class Examples - Grid
 
 library(shiny)

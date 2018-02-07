@@ -1,0 +1,85 @@
+---
+title: "Starwars Flex Dashboard"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: fill
+    theme: sandstone
+    favicon: favicon.ico
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(reshape2)
+library(dplyr)
+library(plotly)
+
+pdf(NULL)
+
+starwars <- starwars
+starwars$films <- NULL
+starwars$vehicles <- NULL
+starwars$starships <- NULL
+meltwars <- melt(starwars, id = "name")
+meltwars$name <- as.factor(meltwars$name)
+```
+
+Sidebar {.sidebar}
+=====================================
+
+```{r}
+
+```
+
+Plot
+=====================================
+
+Row 
+-------------------------------------
+
+###
+
+```{r}
+
+```
+
+###
+
+```{r}
+
+```
+
+### Characters Selected
+
+```{r}
+
+```
+
+Row {.tabset .tabset-fade}
+-------------------------------------
+
+### Mass
+
+```{r}
+
+```
+
+### Height
+
+```{r}
+
+```
+
+Table
+=====================================
+
+Row 
+-------------------------------------
+
+### Table 
+
+```{r}
+
+```

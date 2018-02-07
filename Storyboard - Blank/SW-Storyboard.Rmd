@@ -1,0 +1,50 @@
+---
+title: "Star Wars Story Board"
+author: "Your Name"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(reshape2)
+library(dplyr)
+library(plotly)
+
+pdf(NULL)
+
+starwars <- starwars
+starwars$films <- NULL
+starwars$vehicles <- NULL
+starwars$starships <- NULL
+meltwars <- melt(starwars, id = "name")
+meltwars$name <- as.factor(meltwars$name)
+```
+
+### Mass
+
+```{r}
+
+```
+
+
+***
+
+
+### Height
+
+```{r}
+
+```
+
+***
+
+
+### Table 
+
+```{r}
+
+```

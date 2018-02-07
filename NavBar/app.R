@@ -1,5 +1,4 @@
-# Class 1
-# In Class Examples - NavBar
+# Examples - NavBar
 
 library(shiny)
 library(reshape2)
