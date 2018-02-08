@@ -7,15 +7,14 @@ library(plotly)
 library(DT)
 
 starwars <- starwars
-starwars$films <- NULL
-starwars$vehicles <- NULL
-starwars$starships <- NULL
-meltwars <- melt(starwars, id = "name")
-meltwars$name <- as.factor(meltwars$name)
+starwars$films <- as.character(starwars$films)
+starwars$vehicles <- as.character(starwars$vehicles)
+starwars$starships <- as.character(starwars$starships)
+starwars$name <- as.factor(starwars$name)
 
 pdf(NULL)
 
-# Define UI for application that draws a histogram
+# Define UI for application
 ui <- fluidPage(
   titlePanel("Star Wars Grid"),
   fluidRow(
@@ -23,7 +22,7 @@ ui <- fluidPage(
            wellPanel(
              selectInput("char_select",
                          "Characters:",
-                         choices = levels(meltwars$name),
+                         choices = levels(starwars$name),
                          multiple = TRUE,
                          selectize = TRUE,
                          selected = c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster"))
@@ -41,8 +40,8 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output) {
   output$plot <- renderPlotly({
-    dat <- subset(meltwars, name %in% input$char_select)
-    ggplot(data = dat, aes(x = name, y = as.numeric(value), fill = name)) + geom_bar(stat = "identity")
+    dat <- subset(starwars, name %in% input$char_select)
+    ggplot(data = dat, aes(x = name, y = mass, fill = name)) + geom_bar(stat = "identity")
   })
   output$table <- DT::renderDataTable({
     subset(starwars, name %in% input$char_select, select = c(name, height, mass, birth_year, homeworld, species))

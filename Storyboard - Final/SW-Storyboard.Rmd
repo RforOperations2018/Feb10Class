@@ -17,19 +17,18 @@ library(plotly)
 pdf(NULL)
 
 starwars <- starwars
-starwars$films <- NULL
-starwars$vehicles <- NULL
-starwars$starships <- NULL
-meltwars <- melt(starwars, id = "name")
-meltwars$name <- as.factor(meltwars$name)
+starwars$films <- as.character(starwars$films)
+starwars$vehicles <- as.character(starwars$vehicles)
+starwars$starships <- as.character(starwars$starships)
+starwars$name <- as.factor(starwars$name)
 ```
 
 ### Mass
 
 ```{r}
 renderPlotly({
-    dat <- subset(meltwars, name %in% c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster") & variable == "mass")
-    ggplot(data = dat, aes(x = name, y = as.numeric(value), fill = name)) + geom_bar(stat = "identity")
+    dat <- subset(starwars, name %in% c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster"))
+    ggplot(data = dat, aes(x = name, y = mass, fill = name)) + geom_bar(stat = "identity")
   })
 ```
 
@@ -45,8 +44,8 @@ A picture ![optional caption text](https://www.seeklogo.net/wp-content/uploads/2
 
 ```{r}
 renderPlotly({
-    dat <- subset(meltwars, name %in% c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Chewbacca") & variable == "height")
-    ggplot(data = dat, aes(x = name, y = as.numeric(value), fill = name)) + geom_bar(stat = "identity")
+    dat <- subset(starwars, name %in% c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Chewbacca"))
+    ggplot(data = dat, aes(x = name, y = height, fill = name)) + geom_bar(stat = "identity")
   })
 ```
 
@@ -59,6 +58,6 @@ renderPlotly({
 
 ```{r}
 DT::renderDataTable({
-    subset(starwars, name %in% c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster", "Han Solo"), select = c(name, height, mass, birth_year, homeworld, species))
+    starwars
 })
 ```

@@ -1,4 +1,3 @@
-# Class 2
 # Shiny Dashboard Example
 
 library(shiny)
@@ -7,19 +6,15 @@ library(reshape2)
 library(dplyr)
 library(plotly)
 library(shinythemes)
+library(DT)
+library(purrr)
 
 starwars <- starwars
-starwars$films <- NULL
-starwars$vehicles <- NULL
-starwars$starships <- NULL
-meltwars <- melt(starwars, id = "name")
-meltwars$name <- as.factor(meltwars$name)
+starwarrs <- flatten(starwars)
 
 pdf(NULL)
 
-header <- dashboardHeader(title = "Star Wars Dashboard",
-
-                        )
+header <- dashboardHeader(title = "Star Wars Dashboard")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -30,7 +25,7 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   tabItems(
-    
+
   )
 )
 

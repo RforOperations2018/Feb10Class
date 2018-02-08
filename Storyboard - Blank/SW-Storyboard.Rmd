@@ -30,9 +30,7 @@ meltwars$name <- as.factor(meltwars$name)
 
 ```
 
-
 ***
-
 
 ### Height
 
@@ -42,9 +40,10 @@ meltwars$name <- as.factor(meltwars$name)
 
 ***
 
-
 ### Table 
 
 ```{r}
 
 ```
+
+***

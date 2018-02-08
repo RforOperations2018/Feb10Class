@@ -1,4 +1,3 @@
-# Class 3
 # Shiny Dashboard Example with Reactive Functions
 
 library(shiny)
@@ -9,11 +8,10 @@ library(plotly)
 library(shinythemes)
 
 starwars <- starwars
-starwars$films <- NULL
-starwars$vehicles <- NULL
-starwars$starships <- NULL
-meltwars <- melt(starwars, id = "name")
-meltwars$name <- as.factor(meltwars$name)
+starwars$films <- as.character(starwars$films)
+starwars$vehicles <- as.character(starwars$vehicles)
+starwars$starships <- as.character(starwars$starships)
+starwars$name <- as.factor(starwars$name)
 
 pdf(NULL)
 
@@ -41,7 +39,7 @@ sidebar <- dashboardSidebar(
    menuItem("Table", icon = icon("table"), tabName = "table", badgeLabel = "new", badgeColor = "green"),
    selectInput("char_select",
                "Characters:",
-               choices = levels(meltwars$name),
+               choices = levels(starwars$name),
                multiple = TRUE,
                selectize = TRUE,
                selected = c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster"))
@@ -71,23 +69,17 @@ ui <- dashboardPage(header, sidebar, body)
 
 # Define server logic
 server <- function(input, output) {
-  # Meltware Reactive Function
-  mwInput <- reactive({
-    subset(meltwars, name %in% input$char_select)
-  })
   # Star Wars Reactive Function
   swInput <- reactive({
     subset(starwars, name %in% input$char_select)
   })
   output$plot_mass <- renderPlotly({
     dat <- mwInput()
-    dat <- subset(dat, variable == "mass")
-    ggplot(data = dat, aes(x = name, y = as.numeric(value), fill = name)) + geom_bar(stat = "identity")
+    ggplot(data = dat, aes(x = name, y = mass, fill = name)) + geom_bar(stat = "identity")
   })
   output$plot_height <- renderPlotly({
     dat <- mwInput()
-    dat <- subset(dat, variable == "height")
-    ggplot(data = dat, aes(x = name, y = as.numeric(value), fill = name)) + geom_bar(stat = "identity")
+    ggplot(data = dat, aes(x = name, y = height, fill = name)) + geom_bar(stat = "identity")
   })
   output$table <- DT::renderDataTable({
     sw <- swInput()

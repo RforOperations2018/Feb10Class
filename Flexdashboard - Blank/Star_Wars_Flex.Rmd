@@ -19,11 +19,10 @@ library(plotly)
 pdf(NULL)
 
 starwars <- starwars
-starwars$films <- NULL
-starwars$vehicles <- NULL
-starwars$starships <- NULL
-meltwars <- melt(starwars, id = "name")
-meltwars$name <- as.factor(meltwars$name)
+starwars$films <- as.character(starwars$films)
+starwars$vehicles <- as.character(starwars$vehicles)
+starwars$starships <- as.character(starwars$starships)
+starwars$name <- as.factor(starwars$name)
 ```
 
 Sidebar {.sidebar}
