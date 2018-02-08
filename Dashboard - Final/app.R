@@ -12,13 +12,14 @@ starwars$films <- as.character(starwars$films)
 starwars$vehicles <- as.character(starwars$vehicles)
 starwars$starships <- as.character(starwars$starships)
 starwars$name <- as.factor(starwars$name)
+starwars$bmi <- starwars$mass / ((starwars$height / 100)^2)
 
 pdf(NULL)
 
 header <- dashboardHeader(title = "Star Wars Dashboard",
                           dropdownMenu(type = "notifications",
                                        notificationItem(text = "5 escape pods deployed", 
-                                                        icon = icon("users"))
+                                                        icon = icon("space-shuttle"))
                           ),
                           dropdownMenu(type = "tasks", badgeStatus = "success",
                                        taskItem(value = 110, color = "green",
@@ -42,7 +43,8 @@ sidebar <- dashboardSidebar(
                choices = levels(starwars$name),
                multiple = TRUE,
                selectize = TRUE,
-               selected = c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster"))
+               selected = c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster")),
+   HTML("<center>"), downloadButton("downloadData", label = "Download Characterts"), HTML("</center>")
   )
 )
 
@@ -53,10 +55,10 @@ body <- dashboardBody(tabItems(
             valueBoxOutput("height")
           ),
           fluidRow(
-            tabBox(title = "Plot",
+            tabBox(title = "Plots",
                    width = 12,
                    tabPanel("Mass", plotlyOutput("plot_mass")),
-                   tabPanel("Height", plotlyOutput("plot_height")))
+                   tabPanel("BMI", plotlyOutput("plot_bmi")))
             )
           ),
   tabItem("table",
@@ -74,12 +76,12 @@ server <- function(input, output) {
     subset(starwars, name %in% input$char_select)
   })
   output$plot_mass <- renderPlotly({
-    dat <- mwInput()
-    ggplot(data = dat, aes(x = name, y = mass, fill = name)) + geom_bar(stat = "identity")
+    dat <- swInput()
+    ggplotly(ggplot(data = dat, aes(x = name, y = mass, fill = name)) + geom_bar(stat = "identity"), tooltip = c("x", "y"))
   })
-  output$plot_height <- renderPlotly({
-    dat <- mwInput()
-    ggplot(data = dat, aes(x = name, y = height, fill = name)) + geom_bar(stat = "identity")
+  output$plot_bmi <- renderPlotly({
+    dat <- swInput()
+    ggplot(data = dat, aes(x = mass, y = height, size = bmi, colour = name)) + geom_point()
   })
   output$table <- DT::renderDataTable({
     sw <- swInput()
@@ -97,6 +99,15 @@ server <- function(input, output) {
     
     valueBox(subtitle = "Avg Height", value = num, icon = icon("sort-numeric-asc"), color = "green")
   })
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste('starwars-', Sys.Date(), '.csv', sep='')
+    },
+    content = function(name) {
+      sw <- swInput()
+      write.csv(sw, name)
+    }
+  )
 }
 
 # Run the application 

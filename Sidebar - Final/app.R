@@ -29,8 +29,7 @@ ui <- fluidPage(
                      choices = levels(starwars$name),
                      multiple = TRUE,
                      selectize = TRUE,
-                     selected = c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster")),
-         downloadButton("downloadData", label = "Download Characterts")
+                     selected = c("Luke Skywalker", "Darth Vader", "Jabba Desilijic Tiure", "Obi-Wan Kenobi", "R2-D2", "Dexter Jettster"))
       ),
       
       # Output plot
@@ -46,15 +45,6 @@ server <- function(input, output) {
     dat <- subset(starwars, name %in% input$char_select)
     ggplot(data = dat, aes(x = name, y = mass, fill = name)) + geom_bar(stat = "identity")
   })
-  output$downloadData <- downloadHandler(
-    filename = function() {
-      paste('starwars-', Sys.Date(), '.csv', sep='')
-    },
-    content = function(name) {
-      dat <- subset(starwars, name %in% input$char_select)
-      write.csv(dat, name)
-    }
-  )
 }
 
 # Run the application 
